@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 缩放的动画 -->
+    <style name="PhotoPagerScale">
+        <item name="android:windowEnterAnimation">@anim/ppv_scale_alpha_enter</item>
+        <item name="android:windowExitAnimation">@anim/ppv_scale_alpha_exit</item>
+    </style>
+
+    <!-- 从上往下的动画 -->
+    <style name="PhotoPagerTranslation">
+        <item name="android:windowEnterAnimation">@anim/ppv_translation_enter</item>
+        <item name="android:windowExitAnimation">@anim/ppv_translation_exit</item>
+    </style>
+
+    <style name="Dialog" parent="android:style/Theme.Dialog">
+        <item name="android:background">#00000000</item>
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
+
+</resources>
