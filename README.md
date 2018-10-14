@@ -20,6 +20,15 @@
     }
 }
   ```
+  然后在 build.gradle(Module:app) 的 dependencies 添加:
+  ```
+ dependencies {
+    ...
+   
+    /*需要添加的依赖*/
+    implementation 'com.jieWang:PhotoPagerView:1.0.0'
+ }
+  ```
 ### 2.使用
   动画类型包括平移动画（ANIMATION_TRANSLATION）和透明度缩放动画（ANIMATION_SCALE_ALPHA）：
   ```
