@@ -17,6 +17,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
+    // Android 7.0因为相机的问题没有适配 只是针对本程序 对库没有影响
     // Tips : 如果运行在6.0之上需要动态的申请权限，本程序会因为没有权限退出
     // 或者在安装完成之后在设置中手动打开权限
     public static final int TAKE_PHOTO = 1;
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getPhotoCacheDir();
         Button btnCamera = findViewById(R.id.btn_Camera);
         Button btnShow = findViewById(R.id.btn_Show);
 

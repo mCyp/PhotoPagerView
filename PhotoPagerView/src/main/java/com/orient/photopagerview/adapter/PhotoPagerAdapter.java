@@ -15,7 +15,6 @@ import uk.co.senab.photoview.PhotoView;
 
 
 /**
- *
  * Author WangJie
  * Created on 2018/10/10.
  */
@@ -53,7 +52,7 @@ public class PhotoPagerAdapter extends PagerAdapter {
         if(view == null){
             view = new PhotoView(mContext);
             view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            view.setScaleType(ImageView.ScaleType.CENTER);
+            view.setScaleType(ImageView.ScaleType.FIT_CENTER);
             view.setImageBitmap(bitmaps.get(position));
             mViews.put(position,view);
         }

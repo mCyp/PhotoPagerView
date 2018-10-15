@@ -26,7 +26,7 @@
     ...
    
     /*需要添加的依赖*/
-    implementation 'com.jieWang:PhotoPagerView:1.0.0'
+    implementation 'com.jieWang:PhotoPagerView:1.0.1'
  }
   ```
 ### 2.使用

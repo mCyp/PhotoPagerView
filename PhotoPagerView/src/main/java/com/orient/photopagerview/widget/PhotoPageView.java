@@ -12,10 +12,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.orient.photopagerview.Common;
 import com.orient.photopagerview.R;
 import com.orient.photopagerview.adapter.PhotoPagerAdapter;
 import com.orient.photopagerview.utils.FileUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -36,7 +38,7 @@ public class PhotoPageView implements View.OnClickListener,ViewPager.OnPageChang
     // show currentPosition
     private TextView mPosition;
     private ImageView mDelete;
-    private ViewPager mPhotoPager;
+    private MyViewPager mPhotoPager;
 
     // all base info
     private Config mConfig;
@@ -104,6 +106,7 @@ public class PhotoPageView implements View.OnClickListener,ViewPager.OnPageChang
     public void show(){
         dialog.show();
 
+        mPosition.setText(String.format(Locale.getDefault(),"%d/%d",curPosition+1,bitmaps.size()));
         // seting rect must be after dialog.showing(),otherwise dialog will show in initial size.
         Rect rect = new Rect();
         ((Activity)mContext).getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
@@ -170,6 +173,7 @@ public class PhotoPageView implements View.OnClickListener,ViewPager.OnPageChang
     public void onPageScrollStateChanged(int state) {
 
     }
+
 
     /*
         config
