@@ -1,9 +1,12 @@
 package com.orient.photopagerviewdemo;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.DrawableRes;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -13,14 +16,12 @@ import com.orient.photopagerview.utils.FileUtils;
 import com.orient.photopagerview.widget.PhotoPageView;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
-    // Android 7.0因为相机的问题没有适配 只是针对本程序 对库没有影响
-    // Tips : 如果运行在6.0之上需要动态的申请权限，本程序会因为没有权限退出
-    // 或者在安装完成之后在设置中手动打开权限
-    public static final int TAKE_PHOTO = 1;
+    private List<Bitmap> bitmaps = new ArrayList<>();
 
     // 路径
     private String path;
@@ -30,12 +31,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getPhotoCacheDir();
-        Button btnCamera = findViewById(R.id.btn_Camera);
-        Button btnShow = findViewById(R.id.btn_Show);
+        initView();
+        initData();
 
+
+    }
+
+    private void initData() {
+        int[] v = FileUtils.getScreenSize(this);
+        Bitmap b1 = getBitmap(R.drawable.d1,v);
+        Bitmap b2 = getBitmap(R.drawable.d2,v);
+        Bitmap b3 = getBitmap(R.drawable.d3,v);
+        Bitmap b4 = getBitmap(R.drawable.d4,v);
+        bitmaps.add(b1);
+        bitmaps.add(b2);
+        bitmaps.add(b3);
+        bitmaps.add(b4);
+    }
+
+    public Bitmap getBitmap(@DrawableRes Integer drawable,int[] v){
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        options.inPreferredConfig = Bitmap.Config.RGB_565;
+        BitmapFactory.decodeResource(getResources(),drawable,options);
+        options.inSampleSize = FileUtils.calculateInSampleSize(options,v[0]
+                ,v[1]);
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeResource(getResources(),drawable,options);
+    }
+
+    private void initView() {
+        Button btnShow = findViewById(R.id.btn_Show);
         // 设置点击事件
-        btnCamera.setOnClickListener(this);
         btnShow.setOnClickListener(this);
     }
 
@@ -43,24 +70,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.btn_Camera:{
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                Uri uri = FileUtils.getMediaUriFromFile(getPhotoCacheDir().getAbsolutePath());
-                intent.putExtra(MediaStore.EXTRA_OUTPUT,uri);
-                startActivityForResult(intent,TAKE_PHOTO);
-                break;
-            }
             case R.id.btn_Show:{
-                List<String> paths = FileUtils.getPhotoPaths(path);
-                if(paths == null || paths.size() == 0){
+                if(bitmaps == null || bitmaps.size() == 0){
                     Toast.makeText(MainActivity.this,"照片的数量为0",Toast.LENGTH_SHORT).show();
                     break;
                 }
 
                 // 显示表格
                 PhotoPageView pageView = new PhotoPageView.Builder(MainActivity.this)
-                        .addPaths(paths)
-                        .showDelete(false)
+                        .addBitmaps(bitmaps)
+                        .showDelete(true)
+                        .setDeleteListener(new PhotoPageView.DeleteListener() {
+                            @Override
+                            public void ondelete(int position) {
+                                // TODO 删除指定位置之后的回调
+                                Toast.makeText(MainActivity.this,"删除的位置是："+position,Toast.LENGTH_SHORT).show();
+                            }
+                        })
                         .showAnimation(true)
                         .setAnimationType(PhotoPageView.ANIMATION_TRANSLATION)
                         .setStartPosition(0)
@@ -71,12 +97,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    /*
-        得到存储照片的父文件夹
-     */
-    public File getPhotoCacheDir(){
-        File file = new File(getApplication().getExternalCacheDir(),"photo");
-        path = file.getAbsolutePath();
-        return file;
-    }
+
 }

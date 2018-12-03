@@ -1,9 +1,12 @@
 package com.orient.photopagerview.utils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 
 import com.orient.photopagerview.Common;
 
@@ -126,12 +129,13 @@ public class FileUtils {
     /**
         get bitmaps
      */
-    public static List<Bitmap> getAlbumByPaths(List<String> paths, String Extension, Activity activity) {
+    public static List<Bitmap> getAlbumByPaths(List<String> paths, String Extension, Context context) {
         List<Bitmap> bitmaps = new LinkedList<>();
         if(paths == null || paths.size() == 0)
             return null;
 
         InputStream inputStream = null;
+        int[] value = getScreenSize(context);
         try {
             for (String p : paths) {
                 File f = new File(p);
@@ -142,7 +146,7 @@ public class FileUtils {
                         options.inPreferredConfig = Bitmap.Config.RGB_565;
                         inputStream = new FileInputStream(f);
                         BitmapFactory.decodeStream(inputStream, null, options);
-                        options.inSampleSize = calculateInSampleSize(options,activity.getWindow().getDecorView().getWidth(),activity.getWindow().getDecorView().getHeight());
+                        options.inSampleSize = calculateInSampleSize(options,value[0],value[1]);
                         options.inJustDecodeBounds = false;
                         inputStream = new FileInputStream(f);
                         Bitmap bitmap = BitmapFactory.decodeStream(inputStream, null, options);
@@ -187,6 +191,13 @@ public class FileUtils {
         }
 
         return inSampleSize;
+    }
+
+    public static int[] getScreenSize(Context context){
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(outMetrics);
+        return new int[]{outMetrics.widthPixels,outMetrics.heightPixels};
     }
 
 }

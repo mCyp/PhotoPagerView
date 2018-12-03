@@ -8,12 +8,6 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/btn_Camera"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="拍照"/>
-
-    <Button
         android:id="@+id/btn_Show"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

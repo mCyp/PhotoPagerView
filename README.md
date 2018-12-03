@@ -8,6 +8,7 @@
 <cite>缩放动画.gif<cite><br>
 ![缩放](https://github.com/mCyp/PhotoPagerView/blob/master/app/src/main/res/drawable/translate.gif)<br>
 横移.gif
+
 ## 使用方法
 ### 1.添加依赖
   先在build.gradle(Project:xxx)的repositories中添加：
@@ -25,16 +26,24 @@
  dependencies {
     ...
    
-    /*需要添加的依赖*/
-    implementation 'com.jieWang:PhotoPagerView:1.0.1'
+    /*需要添加的依赖 这里可以查看一下上面的最新版本*/
+    implementation 'com.jieWang:PhotoPagerView:1.0.5'
  }
   ```
 ### 2.使用
   动画类型包括平移动画（ANIMATION_TRANSLATION）和透明度缩放动画（ANIMATION_SCALE_ALPHA）：
   ```
   PhotoPageView pageView = new PhotoPageView.Builder(MainActivity.this) 
-                        .addPaths(paths)  // 每张图片的路径，包里面的FileUtils类支持查询一个目录下的所有的图片路径
-                        .showDelete(false)  // 是否显示删除
+                        .addPaths(bitmaps)  // 获取的Bitmaps
+                        .showDelete(true)  // 是否显示删除
+                        .setDeleteListener(new PhotoPageView.DeleteListener() {
+                            @Override
+                            public void ondelete(int position) {
+                                //删除指定位置之后的回调
+                                Toast.makeText(MainActivity.this,"删除的位置
+                                  是："+position,Toast.LENGTH_SHORT).show();
+                            }
+                        })
                         .showAnimation(true)  // 是否显示动画
                         .setAnimationType(PhotoPageView.ANIMATION_TRANSLATION) // 动画类型 
                         .setStartPosition(0) // 图片打开的位置
@@ -57,4 +66,4 @@
   See the License for the specific language governing permissions and
   limitations under the License.
   ```
-  
+

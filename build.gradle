@@ -3,8 +3,8 @@
 buildscript {
     
     repositories {
-        jcenter()
         google()
+        jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.2'
@@ -23,6 +23,7 @@ allprojects {
         google()
         jcenter()
         maven { url "https://www.jitpack.io" }
+
     }
 }
 
@@ -42,14 +43,14 @@ ext {
     //以下三项均是必配项
     publishedGroupId = 'com.jieWang'
     artifact = 'PhotoPagerView'
-    libraryVersion = '1.0.1'
+    libraryVersion = '1.0.4'
 
     //开源库对应的 github 地址，不知道可不可以不配，应该也是必配
     gitUrl = 'https://github.com/mCyp/PhotoPagerView.git'
 
     //以下三项只是对开源库的描述（应该不是必配项吧，没尝试过）
     libraryName = 'PhotoPagerView'
-    libraryDescription = '用于显示Image的ViewPager'
+    libraryDescription = 'to show image'
     siteUrl = 'https://github.com/mCyp/PhotoPagerView'
 
     //开发者信息，也是必配的吧
