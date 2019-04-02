@@ -1,23 +1,23 @@
 package com.orient.photopagerviewdemo;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.DrawableRes;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.orient.photopagerview.listener.DeleteListener;
 import com.orient.photopagerview.utils.FileUtils;
-import com.orient.photopagerview.widget.PhotoPageView;
+import com.orient.photopagerview.widget.IPhotoPager;
+import com.orient.photopagerview.widget.PhotoPagerViewProxy;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.orient.photopagerview.widget.PhotoPagerViewProxy.ANIMATION_SCALE_ALPHA;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -76,19 +76,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     break;
                 }
 
-                // 显示表格
-                PhotoPageView pageView = new PhotoPageView.Builder(MainActivity.this)
+                /*// 显示表格
+                PhotoPager pageView = new PhotoPager.Builder(MainActivity.this)
                         .addBitmaps(bitmaps)
                         .showDelete(true)
-                        .setDeleteListener(new PhotoPageView.DeleteListener() {
+                        .setDeleteListener(new DeleteListener() {
                             @Override
-                            public void ondelete(int position) {
+                            public void onDelete(int position) {
                                 // TODO 删除指定位置之后的回调
-                                Toast.makeText(MainActivity.this,"删除的位置是："+position,Toast.LENGTH_SHORT).show();
+                                int p = position + 1;
+                                Toast.makeText(MainActivity.this,"删除的位置是："+p,Toast.LENGTH_SHORT).show();
                             }
                         })
                         .showAnimation(true)
-                        .setAnimationType(PhotoPageView.ANIMATION_TRANSLATION)
+                        .setAnimationType(PhotoPager.ANIMATION_SCALE_ALPHA)
+                        .setStartPosition(0)
+                        .create();
+                pageView.show();*/
+
+                // 显示表格
+                IPhotoPager pageView = new PhotoPagerViewProxy.Builder(MainActivity.this)
+                        .addBitmaps(bitmaps)
+                        .showDelete(true)
+                        .setDeleteListener(new DeleteListener() {
+                            @Override
+                            public void onDelete(int position) {
+                                // TODO 删除指定位置之后的回调
+                                int p = position + 1;
+                                Toast.makeText(MainActivity.this,"删除的位置是："+p,Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .showAnimation(true)
+                        .setAnimationType(ANIMATION_SCALE_ALPHA)
                         .setStartPosition(0)
                         .create();
                 pageView.show();

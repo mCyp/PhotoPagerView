@@ -38,7 +38,7 @@
                         .showDelete(true)  // 是否显示删除
                         .setDeleteListener(new PhotoPageView.DeleteListener() {
                             @Override
-                            public void ondelete(int position) {
+                            public void onDelete(int position) {
                                 //删除指定位置之后的回调
                                 Toast.makeText(MainActivity.this,"删除的位置
                                   是："+position,Toast.LENGTH_SHORT).show();
