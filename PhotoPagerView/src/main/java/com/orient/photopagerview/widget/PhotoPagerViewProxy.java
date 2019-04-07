@@ -26,6 +26,7 @@ public class PhotoPagerViewProxy implements IPhotoPager {
     private PhotoPagerViewProxy(Context context, int type, Config config) {
         switch (type) {
             case TYPE_QQ:
+                photoPageView = new QQPager(context,R.style.Dialog);
                 break;
             case TYPE_WE_CHAT:
                 break;

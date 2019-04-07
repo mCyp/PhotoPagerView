@@ -13,6 +13,8 @@ import android.view.MotionEvent;
 
 public class MyViewPager extends ViewPager {
 
+    private boolean isIntercept = false;
+
     public MyViewPager(@NonNull Context context) {
         super(context);
     }
@@ -21,8 +23,14 @@ public class MyViewPager extends ViewPager {
         super(context, attrs);
     }
 
+    public void setIntercept(boolean isIntercept){
+        this.isIntercept = isIntercept;
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+        if(isIntercept)
+            return false;
         try {
             return super.onTouchEvent(ev);
         } catch (IllegalArgumentException ex) {
@@ -32,6 +40,8 @@ public class MyViewPager extends ViewPager {
     }
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if(isIntercept)
+            return true;
         try {
             return super.onInterceptTouchEvent(ev);
         } catch (IllegalArgumentException ex) {

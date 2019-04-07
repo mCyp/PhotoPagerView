@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,7 +51,7 @@ public class NormalPager extends BasePager
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        View root = LayoutInflater.from(mContext).inflate(R.layout.layout_photo_pager, null);
+        View root = LayoutInflater.from(mContext).inflate(R.layout.layout_normal_pager, null);
         setContentView(root);
         initWidget(root);
     }
@@ -71,6 +72,7 @@ public class NormalPager extends BasePager
         mPhotoPager.addOnPageChangeListener(this);
         mPhotoPager.setAdapter(mAdapter = new PhotoPagerAdapter(mContext, bitmaps));
         mPhotoPager.setCurrentItem(curPosition);
+
     }
 
 
@@ -80,37 +82,6 @@ public class NormalPager extends BasePager
             dismiss();
         } else {
             deleteCurrentPosition();
-        }
-    }
-
-    @Override
-    public void show() {
-        if(bitmaps == null || bitmaps.size() == 0){
-            throw new RuntimeException("bitmaps can't be null");
-        }
-
-        super.show();
-
-        mPosition.setText(String.format(Locale.getDefault(), "%d/%d", curPosition + 1, bitmaps.size()));
-        // seting rect must be after dialog.showing(),otherwise dialog will show in initial size.
-        Rect rect = new Rect();
-        ((Activity) mContext).getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
-        // set position and size
-        Window window = getWindow();
-        WindowManager.LayoutParams lp = window.getAttributes();
-        lp.gravity = Gravity.BOTTOM;
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        lp.height = rect.height();
-        window.setAttributes(lp);
-        if (isShowAnimation) {
-            if (animationType == ANIMATION_SCALE_ALPHA) {
-                window.setWindowAnimations(R.style.PhotoPagerScale);
-            } else if (animationType == ANIMATION_TRANSLATION) {
-                window.setWindowAnimations(R.style.PhotoPagerTranslation);
-            } else {
-                // default animaiont is translation
-                window.setWindowAnimations(R.style.PhotoPagerTranslation);
-            }
         }
     }
 
@@ -140,7 +111,7 @@ public class NormalPager extends BasePager
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+        Log.e(TAG,"pos:"+position+",offset:"+positionOffset);
     }
 
     @Override

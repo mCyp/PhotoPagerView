@@ -1,8 +1,15 @@
-### [![bintray](https://img.shields.io/bintray/v/jiewang19951030/Maven/PhotoPagerView.svg)](https://bintray.com/jiewang19951030/Maven/PhotoPagerView)  ![](https://img.shields.io/badge/language-java-orange.svg) [![](https://img.shields.io/badge/license-Apache2.0-green.svg)](https://opensource.org/licenses/apache2.0.php) ![](https://img.shields.io/badge/qq-200522649-red.svg)
+### [![bintray](https://img.shields.io/bintray/v/jiewang19951030/Maven/PhotoPagerView.svg)](https://bintray.com/jiewang19951030/Maven/PhotoPagerView)  ![](https://img.shields.io/badge/language-java-orange.svg) [![](https://img.shields.io/badge/license-Apache2.0-green.svg)](https://opensource.org/licenses/apache2.0.php) ![](https://img.shields.io/badge/qq-200522649-red.svg
 # PhotoPagerView
-**PhotoPagerView** 以ViewPager的形式展示多张图片 <br>
+🌁 **PhotoPagerView** 以ViewPager的形式展示多张图片 <br>
+
+将要添加的主题
+
+- [ ] QQ风格 支持弹幕 已经完成70%
+- [ ] 微信风格 
+
 ## 感谢
 [PhotoView](https://github.com/chrisbanes/PhotoView)
+
 ## 演示
 ![缩放](https://github.com/mCyp/PhotoPagerView/blob/master/app/src/main/res/drawable/scale.gif)<br>
 <cite>缩放动画.gif<cite><br>

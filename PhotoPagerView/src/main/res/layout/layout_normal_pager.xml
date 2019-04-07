@@ -43,6 +43,7 @@
             android:tint="#ffffff"
             android:layout_alignParentEnd="true"
             android:contentDescription="@string/app_name" />
+
     </RelativeLayout>
 
 </FrameLayout>

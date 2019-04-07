@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.orient.photopagerview.widget.PhotoPagerViewProxy.ANIMATION_SCALE_ALPHA;
+import static com.orient.photopagerview.widget.PhotoPagerViewProxy.TYPE_NORMAL;
+import static com.orient.photopagerview.widget.PhotoPagerViewProxy.TYPE_QQ;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -95,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 pageView.show();*/
 
                 // 显示表格
-                IPhotoPager pageView = new PhotoPagerViewProxy.Builder(MainActivity.this)
+                IPhotoPager pageView = new PhotoPagerViewProxy.Builder(MainActivity.this,TYPE_QQ)
                         .addBitmaps(bitmaps)
                         .showDelete(true)
                         .setDeleteListener(new DeleteListener() {
@@ -107,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             }
                         })
                         .showAnimation(true)
-                        .setAnimationType(ANIMATION_SCALE_ALPHA)
+                        .setAnimationType(3)
                         .setStartPosition(0)
                         .create();
                 pageView.show();
