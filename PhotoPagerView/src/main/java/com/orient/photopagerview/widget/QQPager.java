@@ -6,14 +6,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.Window;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,6 +18,7 @@ import com.orient.photopagerview.R;
 import com.orient.photopagerview.adapter.PhotoPagerAdapter;
 import com.orient.photopagerview.listener.SimpleAnimationListener;
 
+import java.lang.ref.WeakReference;
 import java.util.Locale;
 
 /**
@@ -30,10 +28,6 @@ import java.util.Locale;
  */
 
 public class QQPager extends BasePager {
-    // TODO
-    // 1. 控制头部位置显示的时间
-    // 2. 防止Handler和属性动画发生的内存泄漏
-
     private static final String TAG = "QQPager";
     private static final int SCROLL_THRESHOlD = 100;
     private static final int MSG_UP = 0;
@@ -45,50 +39,28 @@ public class QQPager extends BasePager {
 
     private PhotoPagerAdapter mAdapter;
 
-    //private Scroller mScroller;
-
     private int touchSloop;
     private float lastX;
     private float lastY;
-    private float deltaX;
     private float deltaY;
     private boolean isHorizontalMove = false;
     private boolean isVerticalMove = false;
     private boolean isMove = false;
-    //private GestureDetector mGestureDetector;
-    private long pressTime;
-    private boolean isDoubleTap = false;
+    private int clickCount = 0;
 
-    private Handler mHandler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-
-            switch (msg.what){
-                case MSG_UP:
-                    if(!isDoubleTap && !isMove)
-                        dismiss();
-                    else if(isDoubleTap){
-                        isDoubleTap = false;
-                        pressTime = 0;
-                    }else
-                        pressTime = 0;
-                    break;
-            }
-        }
-    };
+    private Handler mHandler = new QQPagerHandler(this);
 
     // no need to use
     //private VelocityTracker mVelocityTracker;
 
 
     public QQPager(@NonNull Context context) {
-        super(context);
+        this(context, R.style.Dialog);
     }
 
     public QQPager(@NonNull Context context, int themeResId) {
         super(context, themeResId);
-        touchSloop =  ViewConfiguration.get(mContext).getScaledTouchSlop();
+        touchSloop = ViewConfiguration.get(mContext).getScaledTouchSlop();
     }
 
     @Override
@@ -98,17 +70,6 @@ public class QQPager extends BasePager {
         View root = LayoutInflater.from(mContext).inflate(R.layout.layout_qq_pager, null);
         setContentView(root);
         initWidget(root);
-        initListener();
-        Window window = getWindow();
-        if (window != null) {
-            window.setDimAmount(1f);
-            //window.setWindowAnimations(R.style.PhotoPagerScale);
-        }
-    }
-
-    private void initListener() {
-        //mGestureDetector = new GestureDetector(mContext, simpleOnGestureListener);
-
     }
 
     private void initWidget(View root) {
@@ -126,6 +87,9 @@ public class QQPager extends BasePager {
                 dismiss();
             }
         });
+
+        mPosition.setText(String.format(Locale.getDefault(), "%d/%d", curPosition + 1, bitmaps.size()));
+
     }
 
     @Override
@@ -133,51 +97,35 @@ public class QQPager extends BasePager {
         if (isHorizontalMove)
             return super.dispatchTouchEvent(ev);
 
-        /*if (isVerticalMove)
-            return false;*/
 
         float curX = ev.getX();
         float curY = ev.getY();
 
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                mPosition.setAlpha(1f);
                 mPosition.setVisibility(View.VISIBLE);
                 isMove = false;
-                if(pressTime != 0)
-                    isDoubleTap = true;
-                pressTime = System.currentTimeMillis();
-                Log.e(TAG,"isDouble:"+isDoubleTap+",time:"+pressTime);
+                clickCount++;
                 break;
             case MotionEvent.ACTION_MOVE:
-                deltaX = curX - lastX;
+                float deltaX = curX - lastX;
                 deltaY = curY - lastY;
-                if(Math.abs(deltaX)>touchSloop || Math.abs(deltaY)> touchSloop){
+                if (Math.abs(deltaX) > touchSloop || Math.abs(deltaY) > touchSloop) {
                     isMove = true;
-                    isDoubleTap = false;
+                    //isDoubleTap = false;
+                    clickCount = 0;
                 }
-                Log.e(TAG,"MOVE:"+isDoubleTap);
                 if (Math.abs(deltaX) < Math.abs(deltaY)) {
                     isVerticalMove = true;
                     mPhotoPager.setIntercept(true);
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                mPosition.animate()
-                        .alpha(0f)
-                        .setDuration(500)
-                        .setListener(new SimpleAnimationListener() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                super.onAnimationEnd(animation);
-                                mPosition.setVisibility(View.GONE);
-                            }
-                        })
-                        .start();
-                if(!isDoubleTap)
-                    mHandler.sendEmptyMessageDelayed(MSG_UP,200);
-                else if(!isMove)
-                    pressTime = 0;
-
+                if (clickCount == 1 && !isMove)
+                    mHandler.sendEmptyMessageDelayed(MSG_UP, 400);
+                else
+                    clickCount = 0;
                 break;
 
         }
@@ -191,55 +139,19 @@ public class QQPager extends BasePager {
         switch (event.getAction()) {
             case MotionEvent.ACTION_MOVE:
                 mPhotoPager.offsetTopAndBottom((int) deltaY);
+
+                // set dialog's background alpha
                 float offsetPercent = Math.abs(mPhotoPager.getTop() - 0f) / mPhotoPager.getMeasuredHeight();
-                //Log.e(TAG, "v:" + mPhotoPager.getTop() + ",H:" + mPhotoPager.getMeasuredHeight());
-                getWindow().setDimAmount(1f - offsetPercent);
+                if (getWindow() != null)
+                    getWindow().setDimAmount(1f - offsetPercent);
                 break;
 
             case MotionEvent.ACTION_UP:
                 if (isVerticalMove) {
                     if (Math.abs(mPhotoPager.getTop() - 0f) > SCROLL_THRESHOlD) {
-                        getWindow().setDimAmount(0f);
-                        if (deltaY > 0) {
-                            mPhotoPager.animate()
-                                    .y(mPhotoPager.getMeasuredHeight())
-                                    .setDuration(600)
-                                    .setListener(new SimpleAnimationListener() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            super.onAnimationEnd(animation);
-                                            //getWindow().setWindowAnimations(R.style.PhotoPagerAlpha);
-                                            dismiss();
-                                        }
-                                    })
-                                    .start();
-                        } else {
-                            mPhotoPager.animate()
-                                    .y(-mPhotoPager.getMeasuredHeight())
-                                    .setDuration(600)
-                                    .setListener(new SimpleAnimationListener() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            super.onAnimationEnd(animation);
-                                            //getWindow().setWindowAnimations(R.style.PhotoPagerAlpha);
-                                            dismiss();
-                                        }
-                                    })
-                                    .start();
-                        }
+                        scrollCloseAnimation();
                     } else {
-                        mPhotoPager.animate()
-                                .y(0)
-                                .setDuration(300)
-                                .setListener(new SimpleAnimationListener() {
-                                    @Override
-                                    public void onAnimationEnd(Animator animation) {
-                                        super.onAnimationEnd(animation);
-                                        isVerticalMove = false;
-                                        mPhotoPager.setIntercept(false);
-                                    }
-                                })
-                                .start();
+                        rollbackAnimation();
                     }
                 }
                 break;
@@ -247,6 +159,62 @@ public class QQPager extends BasePager {
         }
 
         return super.onTouchEvent(event);
+    }
+
+    /**
+     * if scroll distance is less than SCROLL_THRESHOlD,
+     * the ViewPager will scroll to initial position;
+     */
+    private void rollbackAnimation() {
+        mPhotoPager.animate()
+                .y(0)
+                .setDuration(300)
+                .setListener(new SimpleAnimationListener() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        isVerticalMove = false;
+                        mPhotoPager.setIntercept(false);
+                    }
+                })
+                .start();
+    }
+
+
+    /**
+     * ViewPager begin up or down ValueAnimation;
+     */
+    private void scrollCloseAnimation() {
+        Window window = getWindow();
+        if (window != null)
+            window.setDimAmount(0f);
+        if (deltaY > 0) {
+            mPhotoPager.animate()
+                    .y(mPhotoPager.getMeasuredHeight())
+                    .setDuration(600)
+                    .setListener(new SimpleAnimationListener() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            //getWindow().setWindowAnimations(R.style.PhotoPagerAlpha);
+                            dismiss();
+                        }
+                    })
+                    .start();
+        } else {
+            mPhotoPager.animate()
+                    .y(-mPhotoPager.getMeasuredHeight())
+                    .setDuration(600)
+                    .setListener(new SimpleAnimationListener() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            //getWindow().setWindowAnimations(R.style.PhotoPagerAlpha);
+                            dismiss();
+                        }
+                    })
+                    .start();
+        }
     }
 
     @Override
@@ -261,11 +229,34 @@ public class QQPager extends BasePager {
         }
     }
 
+    @Override
+    public void show() {
+        super.show();
+
+        positionTextAlphaAnimation();
+    }
 
     @Override
     public void onPageSelected(int position) {
+        mPosition.setAlpha(1f);
         mPosition.setText(String.format(Locale.getDefault(), "%d/%d", position + 1, bitmaps.size()));
+        positionTextAlphaAnimation();
         curPosition = position;
+    }
+
+    private void positionTextAlphaAnimation(){
+        mPosition.animate()
+                .alpha(0f)
+                .setStartDelay(500)
+                .setDuration(500)
+                .setListener(new SimpleAnimationListener() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        mPosition.setVisibility(View.INVISIBLE);
+                    }
+                })
+                .start();
     }
 
     @Override
@@ -275,27 +266,25 @@ public class QQPager extends BasePager {
         super.dismiss();
     }
 
-    /*private GestureDetector.SimpleOnGestureListener simpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
-        @Override
-        public boolean onSingleTapUp(MotionEvent e) {
-            // TODO exit animation
-            dismiss();
-            return true;
+    private static class QQPagerHandler extends Handler {
+        private WeakReference<QQPager> mQQPagerReference;
+
+        QQPagerHandler(QQPager qqPager) {
+            this.mQQPagerReference = new WeakReference<QQPager>(qqPager);
         }
 
         @Override
-        public boolean onDoubleTap(MotionEvent e) {
-            //return super.onDoubleTap(e);
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
 
-            return false;
+            switch (msg.what) {
+                case MSG_UP:
+                    if (mQQPagerReference.get().clickCount == 1)
+                        mQQPagerReference.get().dismiss();
+                    else
+                        mQQPagerReference.get().clickCount = 0;
+                    break;
+            }
         }
-
-        @Override
-        public void onLongPress(MotionEvent e) {
-            // TODO provider long prick
-            super.onLongPress(e);
-        }
-    };*/
-
-
+    }
 }
