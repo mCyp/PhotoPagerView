@@ -38,7 +38,8 @@ dependencies {
         exclude group: 'com.android.support'
     }
     // 图片展示控件
-    //api "com.github.chrisbanes:PhotoView:$rootProject.ext.photoViewVersion"
+    api 'com.jieWang:Muti-Barrage:1.0.3'
+    implementation 'jp.wasabeef:glide-transformations:4.0.1'
 }
 
 apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'

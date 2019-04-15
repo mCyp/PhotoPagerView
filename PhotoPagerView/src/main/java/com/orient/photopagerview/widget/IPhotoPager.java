@@ -2,6 +2,7 @@ package com.orient.photopagerview.widget;
 
 import android.graphics.Bitmap;
 
+import com.orient.photopagerview.barrage.BarrageData;
 import com.orient.photopagerview.listener.DeleteListener;
 
 import java.util.List;
@@ -25,8 +26,10 @@ public interface IPhotoPager {
         List<Bitmap> bitmaps;
         boolean canDelete = true;
         boolean isShowAnimation = false;
+        boolean isShowBarrage = true;
         int animationType;
         int startPosition = 0;
         DeleteListener deleteListener;
+        List<BarrageData> barrages;
     }
 }

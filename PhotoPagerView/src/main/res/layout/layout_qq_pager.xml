@@ -6,9 +6,15 @@
 
     <com.orient.photopagerview.widget.MyViewPager
         android:id="@+id/pager"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         />
+
+    <com.orient.tea.barragephoto.ui.BarrageView
+        android:id="@+id/barrage"
+        android:layout_marginTop="52dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
     <RelativeLayout
         android:id="@+id/head"

@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,10 +15,17 @@ import android.view.ViewConfiguration;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.orient.photopagerview.R;
 import com.orient.photopagerview.adapter.PhotoPagerAdapter;
+import com.orient.photopagerview.barrage.BarrageData;
 import com.orient.photopagerview.listener.SimpleAnimationListener;
+import com.orient.tea.barragephoto.adapter.AdapterListener;
+import com.orient.tea.barragephoto.adapter.BarrageAdapter;
+import com.orient.tea.barragephoto.ui.BarrageView;
 
 import java.lang.ref.WeakReference;
 import java.util.Locale;
@@ -36,8 +45,12 @@ public class QQPager extends BasePager {
     private ImageView mBarrage;
     private MyViewPager mPhotoPager;
     private TextView mPosition;
-
     private PhotoPagerAdapter mAdapter;
+
+    private BarrageView mBarrageView;
+    private BarrageAdapter<BarrageData> mBarrageAdapter;
+    private boolean isInitBarrage;
+
 
     private int touchSloop;
     private float lastX;
@@ -70,12 +83,87 @@ public class QQPager extends BasePager {
         View root = LayoutInflater.from(mContext).inflate(R.layout.layout_qq_pager, null);
         setContentView(root);
         initWidget(root);
+        initBarrages();
+    }
+
+    private void initBarrages() {
+        BarrageView.Options options = new BarrageView.Options()
+                .setGravity(BarrageView.GRAVITY_TOP)                // 设置弹幕的位置
+                .setInterval(50)                                     // 设置弹幕的发送间隔
+                .setSpeed(200, 29)                   // 设置速度和波动值
+                .setModel(BarrageView.MODEL_COLLISION_DETECTION)     // 设置弹幕生成模式
+                .setClick(false);                                    // 设置弹幕是否可以点击
+        mBarrageView.setOptions(options);
+        // 设置适配器 第一个参数是点击事件的监听器
+        mBarrageView.setAdapter(mBarrageAdapter = new BarrageAdapter<BarrageData>(null, mContext) {
+            @Override
+            public BarrageViewHolder<BarrageData> onCreateViewHolder(View root, int type) {
+                if (type == R.layout.barrage_item_normal)
+                    return new ViewHolder(root);
+                else
+                    return new TextViewHolder(root);
+            }
+
+            @Override
+            public int getItemLayout(BarrageData barrageData) {
+                switch (barrageData.getType()) {
+                    case BarrageData.TYPE_IMAGE:
+                        return R.layout.barrage_item_normal;
+                    default:
+                        return R.layout.barrage_item_text;
+                }
+
+            }
+        });
+
+        mBarrage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isShowBarrages) {
+                    // close barrage
+                    mBarrageView.destroy();
+                    mBarrage.setImageResource(R.drawable.ic_barrage_close);
+                    isShowBarrages = false;
+                } else {
+                    mBarrage.setImageResource(R.drawable.ic_barrage_open);
+                    if (!isInitBarrage)
+                        initBarrageData();
+                    isShowBarrages = true;
+                }
+            }
+        });
+
+        if (isShowBarrages)
+            mBarrage.setImageResource(R.drawable.ic_barrage_open);
+        else
+            mBarrage.setImageResource(R.drawable.ic_barrage_close);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+
+        if (isShowBarrages) {
+            if (!isInitBarrage) {
+                initBarrageData();
+                isInitBarrage = true;
+            }
+        }
+    }
+
+    private void initBarrageData() {
+        if (barrages.size() != 0) {
+            for (BarrageData barrage : barrages) {
+                mBarrageAdapter.add(barrage);
+            }
+        }
     }
 
     private void initWidget(View root) {
         mBarrage = root.findViewById(R.id.iv_barrage);
         mPosition = root.findViewById(R.id.tv_position);
         mPhotoPager = root.findViewById(R.id.pager);
+        mBarrageView = root.findViewById(R.id.barrage);
 
         // set viewpager adapter
         mPhotoPager.addOnPageChangeListener(this);
@@ -89,7 +177,6 @@ public class QQPager extends BasePager {
         });
 
         mPosition.setText(String.format(Locale.getDefault(), "%d/%d", curPosition + 1, bitmaps.size()));
-
     }
 
     @Override
@@ -103,6 +190,7 @@ public class QQPager extends BasePager {
 
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                Log.e(TAG, "dis down!");
                 mPosition.setAlpha(1f);
                 mPosition.setVisibility(View.VISIBLE);
                 isMove = false;
@@ -122,7 +210,8 @@ public class QQPager extends BasePager {
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                if (clickCount == 1 && !isMove)
+                if (clickCount == 1 && !isMove &&
+                        !isTouchPointInView(mBarrage,(int) ev.getRawX(),(int) ev.getRawY()))
                     mHandler.sendEmptyMessageDelayed(MSG_UP, 400);
                 else
                     clickCount = 0;
@@ -134,11 +223,29 @@ public class QQPager extends BasePager {
         return super.dispatchTouchEvent(ev);
     }
 
+    private boolean isTouchPointInView(View targetView, int xAxis, int yAxis) {
+        if (targetView == null) {
+            return false;
+        }
+        int[] location = new int[2];
+        targetView.getLocationOnScreen(location);
+        int left = location[0];
+        int top = location[1];
+        int right = left + targetView.getMeasuredWidth();
+        int bottom = top + targetView.getMeasuredHeight();
+        if (yAxis >= top && yAxis <= bottom && xAxis >= left
+                && xAxis <= right) {
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_MOVE:
-                mPhotoPager.offsetTopAndBottom((int) deltaY);
+                mPhotoPager.scrollBy(0, (int) -deltaY);
+                Log.e(TAG, "dis move:" + deltaY + ",top" + mPhotoPager.getTop());
 
                 // set dialog's background alpha
                 float offsetPercent = Math.abs(mPhotoPager.getTop() - 0f) / mPhotoPager.getMeasuredHeight();
@@ -147,8 +254,9 @@ public class QQPager extends BasePager {
                 break;
 
             case MotionEvent.ACTION_UP:
+                Log.e(TAG, "dis up!");
                 if (isVerticalMove) {
-                    if (Math.abs(mPhotoPager.getTop() - 0f) > SCROLL_THRESHOlD) {
+                    if (Math.abs(mPhotoPager.getScrollY() - 0f) > SCROLL_THRESHOlD) {
                         scrollCloseAnimation();
                     } else {
                         rollbackAnimation();
@@ -244,7 +352,7 @@ public class QQPager extends BasePager {
         curPosition = position;
     }
 
-    private void positionTextAlphaAnimation(){
+    private void positionTextAlphaAnimation() {
         mPosition.animate()
                 .alpha(0f)
                 .setStartDelay(500)
@@ -262,8 +370,52 @@ public class QQPager extends BasePager {
     @Override
     public void dismiss() {
         mHandler.removeCallbacksAndMessages(null);
+        if (mBarrageView != null)
+            mBarrageView.destroy();
 
         super.dismiss();
+    }
+
+    class TextViewHolder extends BarrageAdapter.BarrageViewHolder<BarrageData> {
+
+        private TextView mContent;
+
+        TextViewHolder(View itemView) {
+            super(itemView);
+
+            mContent = itemView.findViewById(R.id.content);
+        }
+
+        @Override
+        protected void onBind(BarrageData data) {
+            mContent.setText(data.getContent());
+        }
+    }
+
+    class ViewHolder extends BarrageAdapter.BarrageViewHolder<BarrageData> {
+
+        private ImageView mHeadView;
+        private TextView mContent;
+
+        ViewHolder(View itemView) {
+            super(itemView);
+
+            mHeadView = itemView.findViewById(R.id.image);
+            mContent = itemView.findViewById(R.id.content);
+        }
+
+        @Override
+        protected void onBind(BarrageData data) {
+            if (!TextUtils.isEmpty(data.getPath()))
+                Glide.with(mContext).load(data.getPath())
+                        .apply(RequestOptions.circleCropTransform())
+                        .into(mHeadView);
+            else
+                Glide.with(mContext).load(data.getResource())
+                        .apply(RequestOptions.circleCropTransform())
+                        .into(mHeadView);
+            mContent.setText(data.getContent());
+        }
     }
 
     private static class QQPagerHandler extends Handler {

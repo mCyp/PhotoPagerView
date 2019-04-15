@@ -12,6 +12,7 @@ import android.view.Gravity;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.orient.photopagerview.barrage.BarrageData;
 import com.orient.photopagerview.listener.DeleteListener;
 import com.orient.photopagerview.R;
 
@@ -42,8 +43,10 @@ public abstract class BasePager extends Dialog
     protected boolean isShowAnimation;
     protected int animationType;
     protected DeleteListener deleteListener;
+    protected boolean isShowBarrages;
 
     protected List<Bitmap> bitmaps;
+    protected List<BarrageData> barrages;
 
     public BasePager(@NonNull Context context) {
         this(context, R.style.Dialog);
@@ -99,6 +102,8 @@ public abstract class BasePager extends Dialog
         this.bitmaps = new ArrayList<>();
         this.bitmaps.addAll(mConfig.bitmaps);
         this.deleteListener = mConfig.deleteListener;
+        this.barrages = mConfig.barrages;
+        this.isShowBarrages = mConfig.isShowBarrage;
     }
 
     @Override

@@ -8,9 +8,15 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/btn_Show"
+        android:id="@+id/btn_normal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="显示"/>
+        android:text="普通主题"/>
+
+    <Button
+        android:id="@+id/btn_qq"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="QQ空间主题"/>
 
 </LinearLayout>

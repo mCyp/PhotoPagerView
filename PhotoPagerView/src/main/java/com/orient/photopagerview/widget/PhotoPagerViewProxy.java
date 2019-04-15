@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 
+import com.orient.photopagerview.barrage.BarrageData;
 import com.orient.photopagerview.listener.DeleteListener;
 import com.orient.photopagerview.R;
 
@@ -104,6 +105,19 @@ public class PhotoPagerViewProxy implements IPhotoPager {
 
         public Builder setStartPosition(int startPosition) {
             config.startPosition = startPosition;
+            return this;
+        }
+
+        /*
+            set barrageData
+         */
+        public Builder setBarrages(List<BarrageData> barrages) {
+            config.barrages = barrages;
+            return this;
+        }
+
+        public Builder showBarrages(boolean isShowBarrages){
+            config.isShowBarrage = isShowBarrages;
             return this;
         }
 

@@ -119,9 +119,4 @@ public class NormalPager extends BasePager
         mPosition.setText(String.format(Locale.getDefault(), "%d/%d", position + 1, bitmaps.size()));
         curPosition = position;
     }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-
-    }
 }
