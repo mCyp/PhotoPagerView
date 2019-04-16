@@ -14,8 +14,10 @@
 - [x] 图片手势操作
 - [x] qq空间图片预览动画
 
-## 一、演示
+## 一、效果
 ![普通主题](<https://github.com/mCyp/PhotoPagerView/blob/master/pic/%E5%9B%BE%E7%89%87%E5%BA%93%E6%99%AE%E9%80%9A%E4%B8%BB%E9%A2%98.gif>)![QQ主题](<https://github.com/mCyp/PhotoPagerView/blob/master/pic/%E5%9B%BE%E7%89%87%E5%BA%93QQ%E4%B8%BB%E9%A2%98.gif>)
+
+上面分别是普通主题图片预览和QQ主题图片预览，如果你对弹幕感兴趣，欢迎关注我的弹幕库[Muti-Barrage](<https://github.com/mCyp/Muti-Barrage>)
 
 
 ## 二、使用方法
@@ -25,7 +27,7 @@
   ```
   allprojects {
     repositories {
-        google()
+        google()// 不翻墙可以注释掉
         jcenter()
         maven { url 'https://jitpack.io' }
     }
