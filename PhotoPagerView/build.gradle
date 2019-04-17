@@ -38,7 +38,7 @@ dependencies {
         exclude group: 'com.android.support'
     }
     // 图片展示控件
-    api 'com.jieWang:Muti-Barrage:1.0.3'
+    api 'com.jieWang:Muti-Barrage:1.0.4'
     implementation 'jp.wasabeef:glide-transformations:4.0.1'
 }
 
