@@ -21,8 +21,9 @@ public class PhotoPagerViewProxy implements IPhotoPager {
 
     public static final int ANIMATION_SCALE_ALPHA = 1;
     public static final int ANIMATION_TRANSLATION = 2;
+    public static final int ANIMATION_ALPHA = 3;
 
-    private IPhotoPager photoPageView;
+    private BasePager photoPageView;
 
     private PhotoPagerViewProxy(Context context, int type, Config config) {
         switch (type) {

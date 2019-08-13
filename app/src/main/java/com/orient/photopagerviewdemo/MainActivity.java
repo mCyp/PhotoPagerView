@@ -3,7 +3,6 @@ package com.orient.photopagerviewdemo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.annotation.DrawableRes;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -19,11 +18,7 @@ import com.orient.photopagerview.widget.PhotoPagerViewProxy;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import static com.orient.photopagerview.widget.PhotoPagerViewProxy.ANIMATION_SCALE_ALPHA;
-import static com.orient.photopagerview.widget.PhotoPagerViewProxy.TYPE_NORMAL;
 import static com.orient.photopagerview.widget.PhotoPagerViewProxy.TYPE_QQ;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
@@ -119,9 +114,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // 显示表格
                 IPhotoPager pageView = new PhotoPagerViewProxy.Builder(MainActivity.this,TYPE_QQ)
                         .addBitmaps(bitmaps)
-                        .showDelete(true)
                         .showAnimation(true)
-                        .setAnimationType(3)
+                        .setAnimationType(PhotoPagerViewProxy.ANIMATION_ALPHA)
                         .setStartPosition(0)
                         // QQ主题特有
                         .setBarrages(barrages)

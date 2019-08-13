@@ -15,7 +15,6 @@ import android.view.ViewConfiguration;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -23,7 +22,6 @@ import com.orient.photopagerview.R;
 import com.orient.photopagerview.adapter.PhotoPagerAdapter;
 import com.orient.photopagerview.barrage.BarrageData;
 import com.orient.photopagerview.listener.SimpleAnimationListener;
-import com.orient.tea.barragephoto.adapter.AdapterListener;
 import com.orient.tea.barragephoto.adapter.BarrageAdapter;
 import com.orient.tea.barragephoto.ui.BarrageView;
 
@@ -40,7 +38,6 @@ public class QQPager extends BasePager {
     private static final String TAG = "QQPager";
     private static final int SCROLL_THRESHOlD = 100;
     private static final int MSG_UP = 0;
-    //private static final int SPEED_THRESHOLD = 2000;
 
     private ImageView mBarrage;
     private MyViewPager mPhotoPager;
@@ -190,7 +187,6 @@ public class QQPager extends BasePager {
 
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                Log.e(TAG, "dis down!");
                 mPosition.setAlpha(1f);
                 mPosition.setVisibility(View.VISIBLE);
                 isMove = false;
@@ -245,16 +241,17 @@ public class QQPager extends BasePager {
         switch (event.getAction()) {
             case MotionEvent.ACTION_MOVE:
                 mPhotoPager.scrollBy(0, (int) -deltaY);
-                Log.e(TAG, "dis move:" + deltaY + ",top" + mPhotoPager.getTop());
+                //Log.e(TAG, "dis move:" + deltaY + ",top" + mPhotoPager.getTop());
 
                 // set dialog's background alpha
-                float offsetPercent = Math.abs(mPhotoPager.getTop() - 0f) / mPhotoPager.getMeasuredHeight();
+                float offsetPercent = Math.abs(mPhotoPager.getScrollY() - 0f) / mPhotoPager.getMeasuredHeight();
+                Log.e(TAG,"offset:"+offsetPercent);
                 if (getWindow() != null)
                     getWindow().setDimAmount(1f - offsetPercent);
                 break;
 
             case MotionEvent.ACTION_UP:
-                Log.e(TAG, "dis up!");
+                //Log.e(TAG, "dis up!");
                 if (isVerticalMove) {
                     if (Math.abs(mPhotoPager.getScrollY() - 0f) > SCROLL_THRESHOlD) {
                         scrollCloseAnimation();
