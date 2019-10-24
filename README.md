@@ -29,7 +29,6 @@
     repositories {
         google()// 不翻墙可以注释掉
         jcenter()
-        maven { url 'https://jitpack.io' }
     }
 }
   ```

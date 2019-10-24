@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import com.orient.photopagerview.barrage.BarrageData;
 import com.orient.photopagerview.listener.DeleteListener;
-import com.orient.photopagerview.utils.FileUtils;
 import com.orient.photopagerview.widget.IPhotoPager;
 import com.orient.photopagerview.widget.PhotoPagerViewProxy;
 
@@ -51,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initData() {
-        int[] v = FileUtils.getScreenSize(this);
+        int[] v = PhotoUtils.getScreenSize(this);
         Bitmap b1 = getBitmap(R.drawable.d1,v);
         Bitmap b2 = getBitmap(R.drawable.d2,v);
         Bitmap b3 = getBitmap(R.drawable.d3,v);
@@ -67,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         options.inJustDecodeBounds = true;
         options.inPreferredConfig = Bitmap.Config.RGB_565;
         BitmapFactory.decodeResource(getResources(),drawable,options);
-        options.inSampleSize = FileUtils.calculateInSampleSize(options,v[0]
+        options.inSampleSize = PhotoUtils.calculateInSampleSize(options,v[0]
                 ,v[1]);
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeResource(getResources(),drawable,options);
