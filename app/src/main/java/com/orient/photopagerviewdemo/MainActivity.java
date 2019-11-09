@@ -25,11 +25,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String SEED[] = {"景色还不错啊", "小姐姐真好看！，", "又去哪里玩了？我也要去！", "门票多少啊？", "厉害啦！","666666"};
     private final int ICON_RESOURCES[] = {R.drawable.cat, R.drawable.corgi, R.drawable.lovelycat, R.drawable.boy, R.drawable.girl,R.drawable.samoyed};
 
-    private List<Bitmap> bitmaps = new ArrayList<>();
+    private List<String> paths = new ArrayList<>();
     private List<BarrageData> barrages = new LinkedList<>();
 
-    // 路径
-    private String path;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,14 +49,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initData() {
         int[] v = PhotoUtils.getScreenSize(this);
-        Bitmap b1 = getBitmap(R.drawable.d1,v);
-        Bitmap b2 = getBitmap(R.drawable.d2,v);
-        Bitmap b3 = getBitmap(R.drawable.d3,v);
-        Bitmap b4 = getBitmap(R.drawable.d4,v);
-        bitmaps.add(b1);
-        bitmaps.add(b2);
-        bitmaps.add(b3);
-        bitmaps.add(b4);
+        List<Bitmap> bitmaps = new LinkedList<>();
+
+        for(int i = 0;i<4;i++) {
+            Bitmap b1 = getBitmap(R.drawable.d1, v);
+            Bitmap b2 = getBitmap(R.drawable.d2, v);
+            Bitmap b3 = getBitmap(R.drawable.d3, v);
+            Bitmap b4 = getBitmap(R.drawable.d4, v);
+            bitmaps.add(b1);
+            bitmaps.add(b2);
+            bitmaps.add(b3);
+            bitmaps.add(b4);
+        }
+
+        // 存储图片
+        for(int i = 0;i<bitmaps.size();i++){
+            Bitmap bitmap = bitmaps.get(i);
+            String p = PhotoUtils.saveSign(bitmap,getExternalCacheDir().getAbsolutePath()+"/cache",Integer.toString(i));
+            paths.add(p);
+        }
     }
 
     public Bitmap getBitmap(@DrawableRes Integer drawable,int[] v){
@@ -83,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if(bitmaps == null || bitmaps.size() == 0){
+        if(paths == null || paths.size() == 0){
             Toast.makeText(MainActivity.this,"照片的数量为0",Toast.LENGTH_SHORT).show();
             return;
         }
@@ -91,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_normal:{
                 // 显示表格
                 IPhotoPager pageView = new PhotoPagerViewProxy.Builder(MainActivity.this)
-                        .addBitmaps(bitmaps)
+                        .addPaths(paths)
                         .showDelete(true)
                         // 普通主题特有 删除事件
                         .setDeleteListener(new DeleteListener() {
@@ -112,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_qq:{
                 // 显示表格
                 IPhotoPager pageView = new PhotoPagerViewProxy.Builder(MainActivity.this,TYPE_QQ)
-                        .addBitmaps(bitmaps)
+                        .addPaths(paths)
                         .showAnimation(true)
                         .setAnimationType(PhotoPagerViewProxy.ANIMATION_ALPHA)
                         .setStartPosition(0)

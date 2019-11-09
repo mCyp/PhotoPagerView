@@ -164,7 +164,7 @@ public class QQPager extends BasePager {
 
         // set viewpager adapter
         mPhotoPager.addOnPageChangeListener(this);
-        mPhotoPager.setAdapter(mAdapter = new PhotoPagerAdapter(mContext, bitmaps));
+        mPhotoPager.setAdapter(mAdapter = new PhotoPagerAdapter(mContext, paths));
         mPhotoPager.setCurrentItem(curPosition);
         mPhotoPager.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -173,7 +173,7 @@ public class QQPager extends BasePager {
             }
         });
 
-        mPosition.setText(String.format(Locale.getDefault(), "%d/%d", curPosition + 1, bitmaps.size()));
+        mPosition.setText(String.format(Locale.getDefault(), "%d/%d", curPosition + 1, paths.size()));
     }
 
     @Override
@@ -344,7 +344,7 @@ public class QQPager extends BasePager {
     @Override
     public void onPageSelected(int position) {
         mPosition.setAlpha(1f);
-        mPosition.setText(String.format(Locale.getDefault(), "%d/%d", position + 1, bitmaps.size()));
+        mPosition.setText(String.format(Locale.getDefault(), "%d/%d", position + 1, paths.size()));
         positionTextAlphaAnimation();
         curPosition = position;
     }

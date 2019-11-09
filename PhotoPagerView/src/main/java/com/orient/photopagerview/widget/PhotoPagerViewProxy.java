@@ -73,8 +73,8 @@ public class PhotoPagerViewProxy implements IPhotoPager {
         /*
             bitmaps
         */
-        public Builder addBitmaps(List<Bitmap> bitmaps) {
-            config.bitmaps = bitmaps;
+        public Builder addPaths(List<String> paths) {
+            config.paths = paths;
             return this;
         }
 

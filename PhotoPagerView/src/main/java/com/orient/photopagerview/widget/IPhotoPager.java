@@ -23,7 +23,6 @@ public interface IPhotoPager {
      */
     class Config {
         List<String> paths;
-        List<Bitmap> bitmaps;
         boolean canDelete = true;
         boolean isShowAnimation = false;
         boolean isShowBarrage = true;

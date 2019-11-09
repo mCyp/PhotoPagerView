@@ -45,7 +45,7 @@ public abstract class BasePager extends Dialog
     protected DeleteListener deleteListener;
     protected boolean isShowBarrages;
 
-    protected List<Bitmap> bitmaps;
+    protected List<String> paths;
     protected List<BarrageData> barrages;
 
     public BasePager(@NonNull Context context) {
@@ -99,8 +99,8 @@ public abstract class BasePager extends Dialog
         this.curPosition = mConfig.startPosition;
 
         // init bitmaps
-        this.bitmaps = new ArrayList<>();
-        this.bitmaps.addAll(mConfig.bitmaps);
+        this.paths = new ArrayList<>();
+        this.paths.addAll(mConfig.paths);
         this.deleteListener = mConfig.deleteListener;
         this.barrages = mConfig.barrages;
         this.isShowBarrages = mConfig.isShowBarrage;
@@ -108,7 +108,7 @@ public abstract class BasePager extends Dialog
 
     @Override
     public void show() {
-        if(bitmaps == null || bitmaps.size() == 0){
+        if(paths == null || paths.size() == 0){
             throw new RuntimeException("bitmaps can't be null");
         }
 

@@ -70,7 +70,7 @@ public class NormalPager extends BasePager
 
         // set viewpager adapter
         mPhotoPager.addOnPageChangeListener(this);
-        mPhotoPager.setAdapter(mAdapter = new PhotoPagerAdapter(mContext, bitmaps));
+        mPhotoPager.setAdapter(mAdapter = new PhotoPagerAdapter(mContext, paths));
         mPhotoPager.setCurrentItem(curPosition);
 
     }
@@ -86,10 +86,10 @@ public class NormalPager extends BasePager
     }
 
     private void deleteCurrentPosition() {
-        if (bitmaps.size() == 1) {
+        if (paths.size() == 1) {
             if(deleteListener != null)
                 deleteListener.onDelete(curPosition);
-            bitmaps.remove(curPosition);
+            paths.remove(curPosition);
             dismiss();
             return;
         }
@@ -97,15 +97,15 @@ public class NormalPager extends BasePager
             deleteListener.onDelete(curPosition);
         if (curPosition != 0) {
             mPhotoPager.setCurrentItem(curPosition - 1);
-            bitmaps.remove(curPosition + 1);
-            mPhotoPager.setAdapter(mAdapter = new PhotoPagerAdapter(mContext, bitmaps));
+            paths.remove(curPosition + 1);
+            mPhotoPager.setAdapter(mAdapter = new PhotoPagerAdapter(mContext, paths));
         } else {
             mPhotoPager.setCurrentItem(curPosition + 1);
-            bitmaps.remove(curPosition - 1);
+            paths.remove(curPosition - 1);
             --curPosition;
-            mPhotoPager.setAdapter(mAdapter = new PhotoPagerAdapter(mContext, bitmaps));
+            mPhotoPager.setAdapter(mAdapter = new PhotoPagerAdapter(mContext, paths));
         }
-        mPosition.setText(String.format(Locale.getDefault(), "%d/%d", curPosition + 1, bitmaps.size()));
+        mPosition.setText(String.format(Locale.getDefault(), "%d/%d", curPosition + 1, paths.size()));
         mAdapter.notifyDataSetChanged();
     }
 
@@ -116,7 +116,7 @@ public class NormalPager extends BasePager
 
     @Override
     public void onPageSelected(int position) {
-        mPosition.setText(String.format(Locale.getDefault(), "%d/%d", position + 1, bitmaps.size()));
+        mPosition.setText(String.format(Locale.getDefault(), "%d/%d", position + 1, paths.size()));
         curPosition = position;
     }
 }

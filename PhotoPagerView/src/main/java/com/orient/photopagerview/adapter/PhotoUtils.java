@@ -1,17 +1,26 @@
-package com.orient.photopagerviewdemo;
+package com.orient.photopagerview.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
-import java.io.ByteArrayOutputStream;
+import com.orient.photopagerview.Common;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * File utils
@@ -91,48 +100,6 @@ class PhotoUtils {
             }
         }
         return bitmap;
-    }
-
-    /**
-     * 储存签名路径
-     * @param bitmap     Bitmap
-     * @param dir 存放的父路径
-     * @param name       文件名
-     * @return 文件字符串
-     */
-    static String saveSign(Bitmap bitmap, String dir, String name) {
-        ByteArrayOutputStream bao = null;
-        FileOutputStream fos = null;
-        File file = new File(dir);
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-        String fileName = name + ".jpg";
-        File cacheFile = new File(file, fileName);
-
-        // 检查该文件是否存在，如果不存在就直接创建一个
-        try {
-            cacheFile.createNewFile();
-            fos = new FileOutputStream(cacheFile);
-            bao = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bao);
-            byte[] b = bao.toByteArray();
-            if (b != null) {
-                fos.write(b);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (fos != null)
-                    fos.close();
-                if (bao != null)
-                    bao.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return cacheFile.getPath();
     }
 
 }

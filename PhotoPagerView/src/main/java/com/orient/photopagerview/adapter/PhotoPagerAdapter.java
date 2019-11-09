@@ -22,12 +22,12 @@ public class PhotoPagerAdapter extends PagerAdapter {
 
     private Context mContext;
     private SparseArray<PhotoView> mViews;
-    private List<Bitmap> bitmaps;
+    private List<String> paths;
 
-    public PhotoPagerAdapter(Context context, List<Bitmap> bitmaps) {
+    public PhotoPagerAdapter(Context context, List<String> paths) {
         this.mContext = context;
-        this.bitmaps = bitmaps;
-        mViews = new SparseArray<>(bitmaps.size());
+        this.paths = paths;
+        mViews = new SparseArray<>(paths.size());
     }
 
     @Override
@@ -37,7 +37,7 @@ public class PhotoPagerAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return bitmaps.size();
+        return paths.size();
     }
 
     @Override
@@ -53,7 +53,10 @@ public class PhotoPagerAdapter extends PagerAdapter {
             view = new PhotoView(mContext);
             view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             view.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            view.setImageBitmap(bitmaps.get(position));
+            String p = paths.get(position);
+            int[] size = PhotoUtils.getScreenSize(mContext);
+            Bitmap bitmap = PhotoUtils.getSingleBitmapByPath(p,size[0],size[1]);
+            view.setImageBitmap(bitmap);
             mViews.put(position,view);
         }
         container.addView(view,0);
