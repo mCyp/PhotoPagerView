@@ -1,7 +1,6 @@
 package com.orient.photopagerview.barrage;
 
-import android.graphics.Bitmap;
-import android.support.annotation.DrawableRes;
+import androidx.annotation.DrawableRes;
 
 import com.orient.tea.barragephoto.model.DataSource;
 

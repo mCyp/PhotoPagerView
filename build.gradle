@@ -44,7 +44,7 @@ ext {
     //以下三项均是必配项
     publishedGroupId = 'com.jieWang'
     artifact = 'PhotoPagerView'
-    libraryVersion = '1.0.9'
+    libraryVersion = '2.0.0'
 
     //开源库对应的 github 地址，不知道可不可以不配，应该也是必配
     gitUrl = 'https://github.com/mCyp/PhotoPagerView.git'
@@ -65,6 +65,6 @@ ext {
     allLicenses = ["Apache-2.0"]
 
     // 图片展示库的版本
-    photoViewVersion = '1.2.6'
+    photoViewVersion = '2.3.0'
 }
 

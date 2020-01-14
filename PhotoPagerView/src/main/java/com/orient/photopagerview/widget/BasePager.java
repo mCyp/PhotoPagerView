@@ -3,11 +3,10 @@ package com.orient.photopagerview.widget;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.view.ViewPager;
+import androidx.annotation.NonNull;
+import androidx.viewpager.widget.ViewPager;
 import android.view.Gravity;
 import android.view.Window;
 import android.view.WindowManager;
@@ -18,7 +17,6 @@ import com.orient.photopagerview.R;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import static com.orient.photopagerview.widget.PhotoPagerViewProxy.ANIMATION_SCALE_ALPHA;
 import static com.orient.photopagerview.widget.PhotoPagerViewProxy.ANIMATION_TRANSLATION;
